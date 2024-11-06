@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/sign-up.css">
+    <title>Sign up</title>
+</head>
+<body>
+    <form action="/sign-up" method="POST">
+        <div class="inputBlock">
+            <label for="username">Username</label>
+            <input id="username" type="text" name="username">
+            <h4 class="e1"></h4>
+        </div>
+        <div class="inputBlock">
+            <label for="password">Password</label>
+            <input id="password" type="password" name="password">
+            <h4 class="e2"></h4>
+        </div>
+        <div class="inputBlock">
+            <label for="confirmPassword">Confirm Password</label>
+            <input id="confirmPassword" type="password" name="confirmPassword">
+            <h4 class="e3"></h4>
+        </div>
+        <button class="createBTN">Create account</button>
+    </form>
+</body>
+<script src="/validation.js"></script>
+</html>
