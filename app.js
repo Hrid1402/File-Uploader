@@ -10,6 +10,8 @@ const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcryptjs');
 require('dotenv').config();
 const prisma = new PrismaClient();
+const multer  = require('multer')
+
 const PORT = 3000
 app.use(
     expressSession({
@@ -36,6 +38,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 app.set("views", path.join(__dirname, "views"));
 app.set('view engine', 'ejs');
+
 
 const validateSignUp = [
   body("username")
@@ -100,8 +103,16 @@ passport.deserializeUser(async (id, done) => {
   }
 });
 
-app.get("/", (req, res) => {
-    res.render("index", {user: req.user});
+app.get("/", async(req, res) => {
+  const userFolders = await prisma.user.findUnique({
+    where: {
+      id: req.user.id,
+    },
+    include: {
+      folders: true,
+    },
+  });
+  res.render("index", {user: req.user, folders: userFolders.folders});
 });
 
 app.get("/sign-up", (req, res) => {res.render("sign-up");});
@@ -146,7 +157,40 @@ app.post("/log-out", (req, res, next) => {
   });
 });
 
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/')
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname)
+  }
+})
+const upload = multer({ storage: storage })
 
+app.post("/upload", upload.single('file'), (req, res) => {
+  console.log(req.file);
+  res.send("Uploaded successfully!");
+});
+
+function getFormattedDate() {
+  const date = new Date();
+  const day = String(date.getDate()).padStart(2, '0'); // Get day (1-31)
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Get month (1-12)
+  const year = date.getFullYear(); // Get year (YYYY)
+  return `${day}/${month}/${year}`; // Format as DD/MM/YYYY
+}
+
+app.post("/addFolder", async(req, res) => {
+  await prisma.folder.create({
+    data:{
+      name: req.body.name,
+      parentID: null,
+      userID: req.user.id,
+      createdAt: getFormattedDate()
+    }
+  });
+  res.send("Worked!");
+});
 
 
 

@@ -3,15 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/index.css">
+    <link rel="icon" href="/fox.png">
     <title>FoxFile</title>
 </head>
 <body>
-    <h1>FoxFile</h1>
+    <!--Dialogs-->
+    <dialog id="myDialog">
+        <div>
+            <button id="openFolderDialog">Add Folder</button>
+            <button id="uploadButton">Add File</button>
+        </div>
+    </dialog>
+
+    <dialog id="folderDialog">
+        <div>
+            <form id="folderForm" action="/addFolder" method="POST">
+                <label for="name">Name</label>
+                <input type="text" name="name" pattern="^[a-zA-Z0-9\-._~:/?#[\]@!$&'()*+,;%=]*$">
+            </form>
+            
+            
+            <div>
+                <button>Cancel</button>
+                <button form="folderForm" type="submit">Create</button>
+            </div>
+        </div>
+    </dialog>
+    <!---->
+
+    <div class="title">
+        <img src="/fox.png" alt="">
+        <h1>FoxFile</h1>
+    </div>
     <%if(user){%>
         <h2>Welcome back <%=user.username%></h2>
         <form action="/log-out" method="POST">
             <button>Logout</button>
         </form>
+        <button id="openDialogBtn"><img src="/add.png" alt=""></button>
+
+        <form action="/upload" method="POST" enctype="multipart/form-data" id="uploadForm">
+            <input type="file" name="file" id="fileInput" style="display: none;"> 
+        </form>
+
+        <div class="filesBox">
+            <a href=""><h2>MyFiles\</h2></a>
+            <div class="location">
+            </div>
+            <div class="files">
+                <%folders.map(f=>{%>
+                    <button class="file">
+                        <div class="end">
+                            <img src="/folder.png" alt="">
+                            <h2><%=f.name%></h2>
+                        </div>
+                        <div class="end">
+                            <h2><%=f.createdAt%></h2>
+                            <img src="/dots.png" alt="options">
+                        </div>
+                    </button>
+                <%})%>
+                <button class="file">
+                    <h2>Name</h2>
+                    <div class="end">
+                        <h2>16 abr 2023</h2>
+                        <img src="/dots.png" alt="options">
+                    </div>
+                </button>
+            </div>
+        </div>
     <%}%>
+    
 </body>
+<script src="/index.js"></script>
 </html>

@@ -18,4 +18,26 @@ model User{
   id Int @id @default(autoincrement())
   username String
   password String
+  folders Folder[]
+}
+
+model Folder{
+  id Int @id @default(autoincrement())
+  name String
+  parentID Int?
+  parent Folder? @relation("FolderParent", fields: [parentID], references: [id])
+  children Folder[] @relation("FolderParent")
+  userID Int
+  user User @relation(fields: [userID], references: [id])
+  files File[]
+  createdAt String
+}
+
+model File {
+  id   Int    @id @default(autoincrement())
+  name String
+  url  String
+  folderID Int
+  folder Folder @relation(fields: [folderID], references: [id])
+  createdAt String 
 }
