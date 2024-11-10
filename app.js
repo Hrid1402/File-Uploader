@@ -11,6 +11,26 @@ const bcrypt = require('bcryptjs');
 require('dotenv').config();
 const prisma = new PrismaClient();
 const multer  = require('multer')
+const cloudinary = require('cloudinary').v2;
+let streamifier = require('streamifier');
+
+cloudinary.config({ 
+  cloud_name: 'duuftbtwk', 
+  api_key: '276182874385462', 
+  api_secret: process.env.CLOUD
+});
+
+const url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTU3HFVnkYFJ_OIogo__Qv58bmhwRqZJcQhOA&s";
+
+let cld_upload_stream = cloudinary.uploader.upload_stream(
+  {
+    folder: "foo"
+  },
+  function(error, result) {
+      console.log(error, result);
+  }
+);
+
 
 const PORT = 3000
 app.use(
@@ -167,18 +187,16 @@ app.post("/log-out", (req, res, next) => {
   });
 });
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/')
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname)
-  }
-})
+const storage = multer.memoryStorage();
 const upload = multer({ storage: storage })
 
 app.post("/upload", upload.single('file'), (req, res) => {
-  console.log(req.file);
+  const fileBuffer = req.file.buffer;
+  console.log("File name:", req.file.originalname);
+  console.log("File size:", req.file.size);
+  console.log("File MIME type:", req.file.mimetype);
+  console.log("File buffer:", req.file.buffer);
+  streamifier.createReadStream(req.file.buffer).pipe(cld_upload_stream);
   res.send("Uploaded successfully!");
 });
 
@@ -223,9 +241,6 @@ app.get("/Files/:id", async(req,res)=>{
 });
 
 app.post("/renameFolder/:id", async(req, res) => {
-  console.log("rename id:" + req.params.id);
-  console.log("rename name:" + req.body.name);
-  
   await prisma.folder.update({
     where:{
       id: parseInt(req.params.id)

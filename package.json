@@ -13,6 +13,7 @@
     "@prisma/client": "^5.22.0",
     "@quixo3/prisma-session-store": "^3.1.13",
     "bcryptjs": "^2.4.3",
+    "cloudinary": "^2.5.1",
     "dotenv": "^16.4.5",
     "ejs": "^3.1.10",
     "express": "^4.21.1",
@@ -21,7 +22,8 @@
     "multer": "^1.4.5-lts.1",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
-    "passport-session": "^1.0.2"
+    "passport-session": "^1.0.2",
+    "streamifier": "^0.1.1"
   },
   "devDependencies": {
     "prisma": "^5.22.0"
