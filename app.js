@@ -364,8 +364,6 @@ app.post("/deleteFile/:id", async(req, res) => {
   }
 
 
-
-  
   await prisma.file.delete({
     where:{
       id: parseInt(req.params.id)
@@ -375,5 +373,28 @@ app.post("/deleteFile/:id", async(req, res) => {
   res.sendStatus(200);
 });
 
+
+app.post("/downloadFile/:id", async(req, res) => {
+  const file = await prisma.file.findUnique({
+    where:{
+      id: parseInt(req.params.id)
+    }
+  });
+  console.log(file);
+  return res.json({name: file.name, url: file.url});
+});
+
+app.post("/renameFile/:id", async(req, res) => {
+  
+  await prisma.file.update({
+    where:{
+      id: parseInt(req.params.id)
+    },
+    data:{
+      name: req.body.name
+    }
+  });
+  res.sendStatus(200);
+});
 
 app.listen(PORT, () => console.log("http://localhost:" + PORT + "/"));
