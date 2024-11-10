@@ -25,10 +25,10 @@ model Folder{
   id Int @id @default(autoincrement())
   name String
   parentID Int?
-  parent Folder? @relation("FolderParent", fields: [parentID], references: [id])
+  parent Folder? @relation("FolderParent", fields: [parentID], references: [id], onDelete: Cascade)
   children Folder[] @relation("FolderParent")
   userID Int
-  user User @relation(fields: [userID], references: [id])
+  user User @relation(fields: [userID], references: [id], onDelete: Cascade)
   files File[]
   createdAt String
 }
@@ -38,7 +38,7 @@ model File {
   name String
   url  String
   folderID Int?
-  folder Folder? @relation(fields: [folderID], references: [id])
+  folder Folder? @relation(fields: [folderID], references: [id], onDelete: Cascade)
   format String
   bytes BigInt
   filePath String @default("")

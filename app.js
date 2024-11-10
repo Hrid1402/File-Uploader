@@ -338,6 +338,8 @@ app.post("/deleteFolder/:id", async(req, res) => {
   await prisma.folder.delete({
     where:{
       id: parseInt(req.params.id)
+    }, include:{
+      children: true
     }
   });
   res.sendStatus(200);
