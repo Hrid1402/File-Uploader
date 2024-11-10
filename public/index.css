@@ -82,7 +82,7 @@ body{
     flex-direction: row;
 }
 
-#folderMenu{
+.folderMenu{
     background-color: rgb(245, 220, 112);  
     position: absolute;  
     top: 50px;

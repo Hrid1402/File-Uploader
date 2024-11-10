@@ -11,15 +11,17 @@ const folderDialog = document.querySelector('#folderDialog');
 const folderDialogBTN  = document.querySelector('#openFolderDialog');
 const lastPathSegment = window.location.pathname.split('/').filter(Boolean).pop();
 
-const FolderOptions = document.querySelector(".FolderOptions");
 const folderMenu = document.querySelector("#folderMenu");
+const fileMenu = document.querySelector("#fileMenu");
 const renameFolderDialog = document.querySelector("#renameFolderDialog");
 const EditFolderBTN = document.querySelector("#EditFolderBTN");
 const FnewName = document.querySelector("#FnewName");
 
 let curFolderId = null;
+let curFileId = null;
 
 function openFolderOptions(event, id){
+  fileMenu.style.display = 'none'
   event.stopPropagation();
   curFolderId = id;
   console.log("curFolderId: " + curFolderId);
@@ -31,6 +33,21 @@ function openFolderOptions(event, id){
   folderMenu.style.top = y-130 + 'px';
 
   folderMenu.style.display = (folderMenu.style.display === 'block') ? 'none' : 'block';
+}
+
+function openFileOptions(event, id){
+  folderMenu.style.display = 'none'
+  event.stopPropagation();
+  curFileId = id;
+  console.log("curFileId: " + curFileId);
+
+  let x = event.clientX;
+  let y = event.clientY;
+
+  fileMenu.style.left = x-220 + 'px';
+  fileMenu.style.top = y-130 + 'px';
+
+  fileMenu.style.display = (fileMenu.style.display === 'block') ? 'none' : 'block';
 }
 
 folderForm.action = `/addFolder/${lastPathSegment}`;
@@ -73,6 +90,14 @@ function openFolder(){
 
 async function deleteFolder(){
   await fetch("/deleteFolder/" + curFolderId, {
+    method: "POST"
+  });
+  window.location.reload();
+};
+
+async function deleteFile(){
+  console.log("try delete");
+  await fetch("/deleteFile/" + curFileId, {
     method: "POST"
   });
   window.location.reload();

@@ -54,6 +54,15 @@
         </ul>
     </div>
 
+    <div id="fileMenu" class="folderMenu" style="display:none">
+        <ul>
+            <li><button onclick="openFolder();">Open</button></li>
+            <li><button id="EditFolderBTN">Rename</button></li>
+            <li><button onclick="console.log('xd');">Download</li>
+            <li><button onclick="deleteFile();">Delete</button></li>
+        </ul>
+    </div>
+
     <div class="title">
         <img src="/fox.png" alt="">
         <h1>FoxFile</h1>
@@ -83,7 +92,7 @@
             <div class="files">
                 <%folders.map(f=>{%>
                     <form action="/Files/<%=f.id%>" method="GET" class="file">
-                        <button class="fileBTN" ondblclick="console.log('Double-clicked!')">
+                        <button class="fileBTN">
                             <div class="end">
                                 <img src="/folder.png" alt="">
                                 <h2><%=f.name%></h2>
@@ -98,17 +107,19 @@
                     
                 <%})%>
                 <%files.map(f=>{%>
-                    <button class="file">
-                        <div class="end">
-                            <img src="/file.png" alt="">
-                            <h2><%=f.name%></h2>
-                        </div>
-                        
+                    <form action=<%=f.url%> method="get" class="file">
+                        <button class="fileBTN">
+                            <div class="end">
+                                <img src="/file.png" alt="">
+                                <h2><%=f.name%></h2>
+                            </div>
+                        </button>
                         <div class="end">
                             <h2><%=f.createdAt%></h2>
-                            <img src="/dots.png" alt="options">
+                            <img src="/dots.png" alt="options" onclick="openFileOptions(event, '<%= f.id %>');">
                         </div>
-                    </button>
+                    </form>
+
                 <%})%>
             </div>
         </div>

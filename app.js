@@ -343,5 +343,37 @@ app.post("/deleteFolder/:id", async(req, res) => {
   res.sendStatus(200);
 });
 
+app.post("/deleteFile/:id", async(req, res) => {
+  console.log("DELETING FILE: " + req.params.id);
+  const file = await prisma.file.findUnique({
+    where:{
+      id: parseInt(req.params.id)
+    }
+  });
+  console.log(file);
+  
+  const { data, error } = await supabase
+    .storage
+    .from('FoxFile')
+    .remove([file.filePath]);
+
+  if (error) {
+    console.error('Error deleting file:', error.message);
+  } else {
+    console.log('File deleted successfully:', data);
+  }
+
+
+
+  
+  await prisma.file.delete({
+    where:{
+      id: parseInt(req.params.id)
+    }
+  });
+  
+  res.sendStatus(200);
+});
+
 
 app.listen(PORT, () => console.log("http://localhost:" + PORT + "/"));
