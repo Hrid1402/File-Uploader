@@ -41,5 +41,6 @@ model File {
   folder Folder? @relation(fields: [folderID], references: [id])
   format String
   bytes BigInt
+  filePath String @default("")
   createdAt String 
 }

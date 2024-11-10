@@ -11,14 +11,12 @@ const bcrypt = require('bcryptjs');
 require('dotenv').config();
 const prisma = new PrismaClient();
 const multer  = require('multer')
-const cloudinary = require('cloudinary').v2;
-let streamifier = require('streamifier');
+const { createClient } = require('@supabase/supabase-js');
 
-cloudinary.config({ 
-  cloud_name: 'duuftbtwk', 
-  api_key: '276182874385462', 
-  api_secret: process.env.CLOUD
-});
+const supabase = createClient(
+  'https://sdpfzgxytxeijierqnga.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNkcGZ6Z3h5dHhlaWppZXJxbmdhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzEyNTI1MjIsImV4cCI6MjA0NjgyODUyMn0.ZrCkj-ndRgSZMJVt48XUlH36PMLq4Ft_WoQ2YlVEdAo'
+);
 
 const PORT = 3000
 app.use(
@@ -130,7 +128,6 @@ app.get("/", async(req, res) => {
       },
     });
     console.log(userFolders.folders[0].children);
-    //TODO files[] temp
     res.render("index", {user: req.user, folders: userFolders.folders[0].children, path: null, files: userFolders.folders[0].files});
   }else{
     res.render("index", {user: req.user, folders: null, path: null, files: null});
@@ -196,27 +193,41 @@ app.post("/log-out", (req, res, next) => {
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage })
 
+function cleanFileName(fileName) {
+  const [base, ext] = fileName.split('.');
+  return (base.replace(/[^a-zA-Z0-9_-]/g, '') + (ext ? '.' + ext : ''));
+}
 
 
 app.post("/upload/:id", upload.single('file'), async(req, res) => {
   console.log("File name:", req.file.originalname);
   console.log("File size:", req.file.size);
-  console.log("File MIME type:", );
+  console.log("File MIME type:", req.file.mimetype);
   console.log("File buffer:", req.file.buffer);
-  const result = await new Promise((resolve, reject) => {
-    const uploadStream = cloudinary.uploader.upload_stream(
-      {
-        folder: "foo"
-      },
-      (error, result) => {
-        if (error) reject(error);
-        console.log(result);
-        resolve(result.secure_url);
-      }
-    ); 
-    streamifier.createReadStream(req.file.buffer).pipe(uploadStream);
-  });
-  console.log(result);
+  fileURL = null
+  filePath = null
+  try {
+    const fileName = `${Date.now()}-${cleanFileName(req.file.originalname)}`;
+    filePath = fileName;
+    
+    const { data, error } = await supabase
+      .storage
+      .from('FoxFile')
+      .upload(fileName, req.file.buffer, {
+        contentType: req.file.mimetype
+      });
+
+    if (error) throw error;
+
+    const { data: { publicUrl } } = supabase
+      .storage
+      .from('FoxFile')
+      .getPublicUrl(fileName);
+      fileURL = publicUrl
+  } catch (error) {
+    console.error("Upload error:", error);
+    return res.status(500).json({ error: error.message });
+  }
   
   parentID = req.params.id;
   if(req.params.id === undefined || req.params.id === "undefined"){
@@ -239,14 +250,14 @@ app.post("/upload/:id", upload.single('file'), async(req, res) => {
   await prisma.file.create({
     data:{
       name: req.file.originalname,
-      url: result,
+      url: fileURL,
       folderID: parseInt(parentID),
       bytes: req.file.size,
       format: req.file.mimetype,
+      filePath: filePath,
       createdAt: getFormattedDate()
     }
   });
-  
   
   res.send("Uploaded successfully!");
   //res.redirect(req.get('referer'));
