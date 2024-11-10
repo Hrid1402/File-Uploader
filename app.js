@@ -126,9 +126,10 @@ app.get("/", async(req, res) => {
       },
     });
     //console.log(userFolders.folders);
-    res.render("index", {user: req.user, folders: userFolders.folders, path: null});
+    //TODO files[] temp
+    res.render("index", {user: req.user, folders: userFolders.folders, path: null, files: []});
   }else{
-    res.render("index", {user: req.user, folders: null, path: null});
+    res.render("index", {user: req.user, folders: null, path: null, files: null});
   }
   
 });
@@ -245,12 +246,14 @@ app.get("/Files/:id", async(req,res)=>{
         },
         include: {
           children: true,
+          files: true
         }
       },
       
     },
   });
-  res.render("index", {user: req.user, folders: curUser.folders[0].children, path: curUser.folders[0].name});
+  console.log(curUser.folders[0].files);
+  res.render("index", {user: req.user, folders: curUser.folders[0].children, path: curUser.folders[0].name, files: curUser.folders[0].files});
 });
 
 app.post("/renameFolder/:id", async(req, res) => {

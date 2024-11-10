@@ -97,19 +97,19 @@
                     
                     
                 <%})%>
-                <!-- 
-                <button class="file">
-                    <div class="end">
-                        <img src="/file.png" alt="">
-                        <h2>Name</h2>
-                    </div>
-                    
-                    <div class="end">
-                        <h2>16 abr 2023</h2>
-                        <img src="/dots.png" alt="options">
-                    </div>
-                </button>
-                -->
+                <%files.map(f=>{%>
+                    <button class="file">
+                        <div class="end">
+                            <img src="/file.png" alt="">
+                            <h2><%=f.name%></h2>
+                        </div>
+                        
+                        <div class="end">
+                            <h2><%=f.createdAt%></h2>
+                            <img src="/dots.png" alt="options">
+                        </div>
+                    </button>
+                <%})%>
             </div>
         </div>
     <%}%>
