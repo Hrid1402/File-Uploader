@@ -20,17 +20,39 @@
         <div>
             <form id="folderForm" action="/addFolder" method="POST">
                 <label for="name">Name</label>
-                <input type="text" name="name" pattern="^[a-zA-Z0-9\-._~:/?#[\]@!$&'()*+,;%=]*$">
-            </form>
-            
+                <input type="text" name="name" pattern="^[\w\-. ]+$">
+            </form>   
             
             <div>
-                <button>Cancel</button>
+                <button onclick="closeFolder();">Cancel</button>
                 <button form="folderForm" type="submit">Create</button>
             </div>
         </div>
     </dialog>
+
+    <dialog id="renameFolderDialog">
+        <div>
+            <div>
+                <label for="name">New name</label>
+                <input id="FnewName" type="text" name="name" pattern="^[\w\-. ]+$">
+            </div>   
+            
+            <div>
+                <button onclick="closeEditFolder();">Cancel</button>
+                <button class="renameFolderBTN" onclick="renameFolder();">Rename</button>
+            </div>
+        </div>
+    </dialog>
     <!---->
+    <!-- Menus -->
+    <div id="folderMenu" class="folderMenu" style="display:none">
+        <ul>
+            <li><button onclick="openFolder();">Open</button></li>
+            <li><button id="EditFolderBTN">Rename</button></li>
+            <li><a href="#">Share</a></li>
+            <li><button onclick="deleteFolder();">Delete</button></li>
+        </ul>
+    </div>
 
     <div class="title">
         <img src="/fox.png" alt="">
@@ -48,29 +70,46 @@
         </form>
 
         <div class="filesBox">
-            <a href=""><h2>MyFiles\</h2></a>
+            <div class="path">
+                <a href="/"><h2>Files</h2></a>
+                <%if(path){%>
+                    <h2>/<%=path%>/</h2>
+                <%}else{%>
+                    <h2>/</h2>
+                <%}%>
+            </div>
             <div class="location">
             </div>
             <div class="files">
                 <%folders.map(f=>{%>
-                    <button class="file">
-                        <div class="end">
-                            <img src="/folder.png" alt="">
-                            <h2><%=f.name%></h2>
-                        </div>
+                    <form action="/Files/<%=f.id%>" method="GET" class="file">
+                        <button class="fileBTN" ondblclick="console.log('Double-clicked!')">
+                            <div class="end">
+                                <img src="/folder.png" alt="">
+                                <h2><%=f.name%></h2>
+                            </div>
+                        </button>
                         <div class="end">
                             <h2><%=f.createdAt%></h2>
-                            <img src="/dots.png" alt="options">
+                            <img class="FolderOptions" src="/dots.png" alt="options" onclick="openFolderOptions(event, '<%= f.id %>');">
                         </div>
-                    </button>
+                    </form>
+                    
+                    
                 <%})%>
+                <!-- 
                 <button class="file">
-                    <h2>Name</h2>
+                    <div class="end">
+                        <img src="/file.png" alt="">
+                        <h2>Name</h2>
+                    </div>
+                    
                     <div class="end">
                         <h2>16 abr 2023</h2>
                         <img src="/dots.png" alt="options">
                     </div>
                 </button>
+                -->
             </div>
         </div>
     <%}%>

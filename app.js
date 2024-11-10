@@ -104,15 +104,25 @@ passport.deserializeUser(async (id, done) => {
 });
 
 app.get("/", async(req, res) => {
-  const userFolders = await prisma.user.findUnique({
-    where: {
-      id: req.user.id,
-    },
-    include: {
-      folders: true,
-    },
-  });
-  res.render("index", {user: req.user, folders: userFolders.folders});
+  if(req.user){
+    const userFolders = await prisma.user.findUnique({
+      where: {
+        id: req.user.id,
+      },
+      include: {
+        folders:{
+          where:{
+            parentID: null
+          } 
+        }
+      },
+    });
+    //console.log(userFolders.folders);
+    res.render("index", {user: req.user, folders: userFolders.folders, path: null});
+  }else{
+    res.render("index", {user: req.user, folders: null, path: null});
+  }
+  
 });
 
 app.get("/sign-up", (req, res) => {res.render("sign-up");});
@@ -174,24 +184,67 @@ app.post("/upload", upload.single('file'), (req, res) => {
 
 function getFormattedDate() {
   const date = new Date();
-  const day = String(date.getDate()).padStart(2, '0'); // Get day (1-31)
-  const month = String(date.getMonth() + 1).padStart(2, '0'); // Get month (1-12)
-  const year = date.getFullYear(); // Get year (YYYY)
-  return `${day}/${month}/${year}`; // Format as DD/MM/YYYY
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
 }
 
-app.post("/addFolder", async(req, res) => {
+app.post("/addFolder/:id", async(req, res) => {
+  console.log("curFolder: " + req.params.id);
   await prisma.folder.create({
     data:{
       name: req.body.name,
-      parentID: null,
+      parentID: parseInt(req.params.id),
       userID: req.user.id,
       createdAt: getFormattedDate()
     }
   });
-  res.send("Worked!");
+  res.redirect(req.get('referer'));
+});
+app.get("/Files/:id", async(req,res)=>{
+  const curUser = await prisma.user.findUnique({
+    where: {
+      id: req.user.id,
+    },
+    include: {
+      folders: {
+        where: {
+          id: parseInt(req.params.id),
+        },
+        include: {
+          children: true,
+        }
+      },
+      
+    },
+  });
+  res.render("index", {user: req.user, folders: curUser.folders[0].children, path: curUser.folders[0].name});
 });
 
+app.post("/renameFolder/:id", async(req, res) => {
+  console.log("rename id:" + req.params.id);
+  console.log("rename name:" + req.body.name);
+  
+  await prisma.folder.update({
+    where:{
+      id: parseInt(req.params.id)
+    },
+    data:{
+      name: req.body.name
+    }
+  });
+  res.sendStatus(200);
+});
+
+app.post("/deleteFolder/:id", async(req, res) => {
+  await prisma.folder.delete({
+    where:{
+      id: parseInt(req.params.id)
+    }
+  });
+  res.sendStatus(200);
+});
 
 
 app.listen(PORT, () => console.log("http://localhost:" + PORT + "/"));

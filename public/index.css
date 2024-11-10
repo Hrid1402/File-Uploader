@@ -29,10 +29,20 @@ body{
     flex-direction: row;
     justify-content: space-between;
     background-color: rgb(255, 215, 146);
+    width: 100%;
+    border: 2px solid black;
+}
+.fileBTN{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: rgb(255, 215, 146);
     align-items: center;
     width: 100%;
+    border: none;
+    width: 100%;
 }
-.file:hover{
+.fileBTN:hover{
     background-color: rgb(255, 236, 203);
 }
 .file h2{
@@ -42,6 +52,11 @@ body{
     display: flex;
     flex-direction: row;
     align-items: center;
+}
+.file .end img:hover{
+    pointer-events: auto;
+    cursor: pointer;
+    transform: scale(1.2);
 }
 #openDialogBtn{
     height: 80px;
@@ -61,4 +76,20 @@ body{
 }
 #openDialogBtn img{
     height: 105%;
+}
+.path{
+    display: flex;
+    flex-direction: row;
+}
+
+#folderMenu{
+    background-color: rgb(245, 220, 112);  
+    position: absolute;  
+    top: 50px;
+    left: 20px;
+    padding: 5px;
+    width: 200px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+    display: none;  
 }
