@@ -120,14 +120,18 @@ app.get("/", async(req, res) => {
       include: {
         folders:{
           where:{
-            parentID: null
-          } 
+            parentID: null,
+          },
+          include: {
+            children: true,
+            files: true
+          }
         }
       },
     });
-    //console.log(userFolders.folders);
+    console.log(userFolders.folders[0].children);
     //TODO files[] temp
-    res.render("index", {user: req.user, folders: userFolders.folders, path: null, files: []});
+    res.render("index", {user: req.user, folders: userFolders.folders[0].children, path: null, files: userFolders.folders[0].files});
   }else{
     res.render("index", {user: req.user, folders: null, path: null, files: null});
   }
@@ -136,6 +140,19 @@ app.get("/", async(req, res) => {
 
 app.get("/sign-up", (req, res) => {res.render("sign-up");});
 app.get("/log-in", (req, res) => {res.render("log-in");});
+
+
+async function createMainUserFolder(name, id, res){
+  await prisma.folder.create({
+    data:{
+      name: name,
+      parentID: null,
+      userID: id,
+      createdAt: getFormattedDate()
+    }
+  });
+  return res.redirect("/");
+}
 app.post("/sign-up", validateSignUp, async(req, res, next) => {
   console.log(req.body);
   const errors = validationResult(req);
@@ -156,7 +173,7 @@ app.post("/sign-up", validateSignUp, async(req, res, next) => {
             if (err) {
                 return next(err);
             }
-            return res.redirect("/");
+            createMainUserFolder(req.body.username, req.user.id, res);
         });
       } catch(err) {
         return next(err);
@@ -193,17 +210,37 @@ app.post("/upload/:id", upload.single('file'), async(req, res) => {
       },
       (error, result) => {
         if (error) reject(error);
+        console.log(result);
         resolve(result.secure_url);
       }
     ); 
     streamifier.createReadStream(req.file.buffer).pipe(uploadStream);
   });
   console.log(result);
+  
+  parentID = req.params.id;
+  if(req.params.id === undefined || req.params.id === "undefined"){
+    console.log("Is undefined");
+    const curUser = await prisma.user.findUnique({
+      where: {
+        id: req.user.id,
+      },
+      include: {
+        folders:{
+          where:{
+            parentID: null,
+          }
+        }
+      }
+    });
+    parentID = curUser.folders[0].id;
+  }
+
   await prisma.file.create({
     data:{
       name: req.file.originalname,
       url: result,
-      folderID: parseInt(req.params.id),
+      folderID: parseInt(parentID),
       bytes: req.file.size,
       format: req.file.mimetype,
       createdAt: getFormattedDate()
@@ -212,6 +249,7 @@ app.post("/upload/:id", upload.single('file'), async(req, res) => {
   
   
   res.send("Uploaded successfully!");
+  //res.redirect(req.get('referer'));
 });
 
 function getFormattedDate() {
@@ -222,12 +260,29 @@ function getFormattedDate() {
   return `${day}/${month}/${year}`;
 }
 
-app.post("/addFolder/:id", async(req, res) => {
+app.post("/addFolder/:id?", async(req, res) => {
   console.log("curFolder: " + req.params.id);
+  parentID = req.params.id;
+  if(req.params.id === undefined || req.params.id === "undefined"){
+    console.log("Is undefined");
+    const curUser = await prisma.user.findUnique({
+      where: {
+        id: req.user.id,
+      },
+      include: {
+        folders:{
+          where:{
+            parentID: null,
+          }
+        }
+      }
+    });
+    parentID = curUser.folders[0].id;
+  }
   await prisma.folder.create({
     data:{
       name: req.body.name,
-      parentID: parseInt(req.params.id),
+      parentID: parseInt(parentID),
       userID: req.user.id,
       createdAt: getFormattedDate()
     }

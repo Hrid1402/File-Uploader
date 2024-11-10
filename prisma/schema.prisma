@@ -37,8 +37,8 @@ model File {
   id   Int    @id @default(autoincrement())
   name String
   url  String
-  folderID Int
-  folder Folder @relation(fields: [folderID], references: [id])
+  folderID Int?
+  folder Folder? @relation(fields: [folderID], references: [id])
   format String
   bytes BigInt
   createdAt String 
