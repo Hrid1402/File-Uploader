@@ -20,18 +20,6 @@ cloudinary.config({
   api_secret: process.env.CLOUD
 });
 
-const url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTU3HFVnkYFJ_OIogo__Qv58bmhwRqZJcQhOA&s";
-
-let cld_upload_stream = cloudinary.uploader.upload_stream(
-  {
-    folder: "foo"
-  },
-  function(error, result) {
-      console.log(error, result);
-  }
-);
-
-
 const PORT = 3000
 app.use(
     expressSession({
@@ -190,13 +178,38 @@ app.post("/log-out", (req, res, next) => {
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage })
 
-app.post("/upload", upload.single('file'), (req, res) => {
-  const fileBuffer = req.file.buffer;
+
+
+app.post("/upload/:id", upload.single('file'), async(req, res) => {
   console.log("File name:", req.file.originalname);
   console.log("File size:", req.file.size);
-  console.log("File MIME type:", req.file.mimetype);
+  console.log("File MIME type:", );
   console.log("File buffer:", req.file.buffer);
-  streamifier.createReadStream(req.file.buffer).pipe(cld_upload_stream);
+  const result = await new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        folder: "foo"
+      },
+      (error, result) => {
+        if (error) reject(error);
+        resolve(result.secure_url);
+      }
+    ); 
+    streamifier.createReadStream(req.file.buffer).pipe(uploadStream);
+  });
+  console.log(result);
+  await prisma.file.create({
+    data:{
+      name: req.file.originalname,
+      url: result,
+      folderID: parseInt(req.params.id),
+      bytes: req.file.size,
+      format: req.file.mimetype,
+      createdAt: getFormattedDate()
+    }
+  });
+  
+  
   res.send("Uploaded successfully!");
 });
 

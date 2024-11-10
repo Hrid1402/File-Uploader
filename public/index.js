@@ -61,6 +61,7 @@ uploadButton.addEventListener('click', () => {
 
 fileInput.addEventListener('change', () => {
     if (fileInput.files.length > 0) {
+      uploadForm.action = "/upload/" + lastPathSegment;
       uploadForm.submit();
     }
 });
