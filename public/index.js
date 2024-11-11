@@ -34,10 +34,10 @@ function openFolderOptions(event, id){
   let x = event.clientX;
   let y = event.clientY;
 
-  folderMenu.style.left = x-220 + 'px';
-  folderMenu.style.top = y-130 + 'px';
+  folderMenu.style.left = x-135 + 'px';
+  folderMenu.style.top = y-160 + 'px';
 
-  folderMenu.style.display = (folderMenu.style.display === 'block') ? 'none' : 'block';
+  folderMenu.style.display = (folderMenu.style.display === 'flex') ? 'none' : 'flex';
 }
 
 function openFileOptions(event, id){
@@ -49,11 +49,19 @@ function openFileOptions(event, id){
   let x = event.clientX;
   let y = event.clientY;
 
-  fileMenu.style.left = x-220 + 'px';
-  fileMenu.style.top = y-130 + 'px';
+  fileMenu.style.left = x-155 + 'px';
+  fileMenu.style.top = y-220 + 'px';
 
-  fileMenu.style.display = (fileMenu.style.display === 'block') ? 'none' : 'block';
+  fileMenu.style.display = (fileMenu.style.display === 'flex') ? 'none' : 'flex';
 }
+
+document.addEventListener('click', (event) => {
+  if (folderMenu.style.display === 'flex' && !folderMenu.contains(event.target)) {
+    folderMenu.style.display = 'none';
+  }else if(fileMenu.style.display === 'flex' && !fileMenu.contains(event.target)){
+    fileMenu.style.display = 'none';
+  }
+});
 
 folderForm.action = `/addFolder/${lastPathSegment}`;
 openDialogBtn.addEventListener("click", function() {

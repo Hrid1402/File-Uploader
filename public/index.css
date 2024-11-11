@@ -126,11 +126,23 @@ body{
     position: absolute;  
     top: 50px;
     left: 20px;
-    padding: 5px;
-    width: 200px;
     border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
-    display: none;  
+    flex-direction: column;
+    display: none;
+}
+.folderMenu button{
+    padding: 15px 10px;
+    width: 100%;
+    border: #ffc536  1px solid;
+    background-color: transparent;
+    font-size: 25px;
+    color: rgb(0, 0, 0);
+}
+.folderMenu button:hover{
+    cursor: pointer;
+    background-color: #ffc536 ;
+    color: rgb(255, 255, 255);
 }
 .TITLE{
     font-size: 35px;
