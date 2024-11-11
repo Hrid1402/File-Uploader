@@ -19,8 +19,8 @@ const FnewName = document.querySelector("#FnewName");
 
 const renameFileDialog = document.querySelector("#renameFileDialog");
 const renameFileBTN = document.querySelector("#EditFileBTN");
-const FileNewN = document.querySelector("FileNewN");
-
+const FileNewN = document.querySelector("#FileNewN");
+const UploadingFile = document.querySelector("#UploadingFile");
 
 let curFolderId = null;
 let curFileId = null;
@@ -92,6 +92,7 @@ fileInput.addEventListener('change', () => {
     if (fileInput.files.length > 0) {
       uploadForm.action = "/upload/" + lastPathSegment;
       uploadForm.submit();
+      UploadingFile.style.display = "flex";
     }
 });
 

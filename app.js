@@ -200,6 +200,9 @@ function cleanFileName(fileName) {
 
 
 app.post("/upload/:id", upload.single('file'), async(req, res) => {
+  if(!req.user){
+    return res.redirect("/");
+  }
   console.log("File name:", req.file.originalname);
   console.log("File size:", req.file.size);
   console.log("File MIME type:", req.file.mimetype);
@@ -258,8 +261,7 @@ app.post("/upload/:id", upload.single('file'), async(req, res) => {
       createdAt: getFormattedDate()
     }
   });
-  
-  res.send("Uploaded successfully!");
+  res.redirect(req.get('referer'));
   //res.redirect(req.get('referer'));
 });
 
@@ -272,6 +274,9 @@ function getFormattedDate() {
 }
 
 app.post("/addFolder/:id?", async(req, res) => {
+  if(!req.user){
+    return res.redirect("/");
+  }
   console.log("curFolder: " + req.params.id);
   parentID = req.params.id;
   if(req.params.id === undefined || req.params.id === "undefined"){
@@ -301,6 +306,9 @@ app.post("/addFolder/:id?", async(req, res) => {
   res.redirect(req.get('referer'));
 });
 app.get("/Files/:id", async(req,res)=>{
+  if(!req.user){
+    return res.redirect("/");
+  }
   const curUser = await prisma.user.findUnique({
     where: {
       id: req.user.id,
@@ -318,11 +326,13 @@ app.get("/Files/:id", async(req,res)=>{
       
     },
   });
-  console.log(curUser.folders[0].files);
   res.render("index", {user: req.user, folders: curUser.folders[0].children, path: curUser.folders[0].name, files: curUser.folders[0].files});
 });
 
 app.post("/renameFolder/:id", async(req, res) => {
+  if(!req.user){
+    return res.redirect("/");
+  }
   await prisma.folder.update({
     where:{
       id: parseInt(req.params.id)
@@ -335,6 +345,9 @@ app.post("/renameFolder/:id", async(req, res) => {
 });
 
 app.post("/deleteFolder/:id", async(req, res) => {
+  if(!req.user){
+    return res.redirect("/");
+  }
   await prisma.folder.delete({
     where:{
       id: parseInt(req.params.id)
@@ -346,6 +359,9 @@ app.post("/deleteFolder/:id", async(req, res) => {
 });
 
 app.post("/deleteFile/:id", async(req, res) => {
+  if(!req.user){
+    return res.redirect("/");
+  }
   console.log("DELETING FILE: " + req.params.id);
   const file = await prisma.file.findUnique({
     where:{
@@ -364,8 +380,6 @@ app.post("/deleteFile/:id", async(req, res) => {
   } else {
     console.log('File deleted successfully:', data);
   }
-
-
   await prisma.file.delete({
     where:{
       id: parseInt(req.params.id)
@@ -377,6 +391,9 @@ app.post("/deleteFile/:id", async(req, res) => {
 
 
 app.post("/downloadFile/:id", async(req, res) => {
+  if(!req.user){
+    return res.redirect("/");
+  }
   const file = await prisma.file.findUnique({
     where:{
       id: parseInt(req.params.id)
@@ -387,7 +404,9 @@ app.post("/downloadFile/:id", async(req, res) => {
 });
 
 app.post("/renameFile/:id", async(req, res) => {
-  
+  if(!req.user){
+    return res.redirect("/");
+  }
   await prisma.file.update({
     where:{
       id: parseInt(req.params.id)

@@ -77,11 +77,12 @@
         </ul>
     </div>
 
-    <div class="title">
-        <img src="/fox.png" alt="">
-        <h1>FoxFile</h1>
-    </div>
+    
     <%if(user){%>
+        <div class="title">
+            <img src="/fox.png" alt="">
+            <h1>FoxFile</h1>
+        </div>
         <h2>Welcome back <%=user.username%></h2>
         <form action="/log-out" method="POST">
             <button>Logout</button>
@@ -136,8 +137,25 @@
                     </form>
 
                 <%})%>
+                <div class="fileL" id="UploadingFile">
+                    <button disabled class="fileBTNL">
+                        <div class="endL"></div>
+                    </button>
+                </div>
             </div>
         </div>
+    <%}else{%>
+        <div class="TITLE">
+            <div class="ICONS">
+                <img src="/fox.png" alt="">
+                <h1>FoxFile</h1>
+            </div>
+        </div>
+       <h1 class="slogan">Simple cloud storage for all your files. Upload, organize, and access your documents anywhere, anytime.</h1>
+       <div class="btns">
+            <button onclick="location.href='/log-in'">Login</button>
+            <button onclick="location.href='/sign-up'">Sign up</button>
+       </div>
     <%}%>
     
 </body>
