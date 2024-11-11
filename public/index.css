@@ -179,9 +179,30 @@ body{
     border: 0;
     box-shadow: 0px 0px 15px 3px rgba(141, 141, 141, 0.315);
   }
-.btns button:hover{
+.btns button:hover, .logout:hover{
     cursor: pointer;
     color: #ffc536;
     background-color: #ffff;
-  }
-  
+}
+.logout{
+    display: flex;
+    align-items: center;
+    padding: 10px 5px;
+    justify-content: center;
+    line-height: 1;
+    text-decoration: none;
+    color: #ffffff;
+    font-size: 23px;
+    border-radius: 10px;
+    font-weight: bold;
+    transition: 0.3s;
+    background-color: #ffc536;
+    border: 0;
+    box-shadow: 0px 0px 15px 3px rgba(141, 141, 141, 0.315);
+}
+.formLogout{
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    align-items: center;
+}

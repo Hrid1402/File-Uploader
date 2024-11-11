@@ -83,9 +83,9 @@
             <img src="/fox.png" alt="">
             <h1>FoxFile</h1>
         </div>
-        <h2>Welcome back <%=user.username%></h2>
-        <form action="/log-out" method="POST">
-            <button>Logout</button>
+        <form class="formLogout" action="/log-out" method="POST">
+            <h2>Welcome back <%=user.username%></h2>
+            <button class="logout">Logout</button>
         </form>
         <button id="openDialogBtn"><img src="/add.png" alt=""></button>
 

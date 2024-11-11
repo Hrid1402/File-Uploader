@@ -1,12 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
 body{
     background-color: rgb(254, 255, 165);
+    height: 80vh;
 }
 *{
     font-family: "Raleway", sans-serif;
     font-optical-sizing: auto;
     font-weight: 400;
     font-style: normal;
+}
+body{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(254, 255, 218);
 }
 .inputBlock{
     display: flex;
@@ -36,3 +44,25 @@ input{
 input:invalid{
     border: 2px solid rgb(250, 63, 63);
 }
+button{
+    display: flex;
+    align-items: center;
+    padding: 15px 10px;
+    justify-content: center;
+    line-height: 1;
+    text-decoration: none;
+    color: #ffffff;
+    font-size: 28px;
+    border-radius: 10px;
+    font-weight: bold;
+    transition: 0.3s;
+    background-color: #ffc536;
+    border: 0;
+    box-shadow: 0px 0px 15px 3px rgba(141, 141, 141, 0.315);
+}
+
+button:hover{
+    cursor: pointer;
+    color: #ffc536;
+    background-color: #ffff;
+  }
