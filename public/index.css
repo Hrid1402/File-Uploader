@@ -60,6 +60,9 @@ body{
 .fileBTN:hover{
     background-color: rgb(255, 236, 203);
 }
+.fileBTN:hover +  .end{
+    background-color: rgb(255, 236, 203);
+}
 .file h2, .fileL h2{
     padding-left: 15px;
 }
@@ -119,6 +122,15 @@ body{
 .path{
     display: flex;
     flex-direction: row;
+    font-size: 20px;
+}
+.path a{
+    text-decoration: none;
+    
+}
+.path a:hover{
+    color: rgb(247, 131, 23);
+    
 }
 
 .folderMenu{
@@ -217,4 +229,72 @@ body{
     flex-direction: row;
     gap: 15px;
     align-items: center;
+}
+#myDialog{
+    background-color: #ffc536;
+    border: 1px solid black;
+    border-radius: 25px;
+}
+#myDialog button{
+    margin: 0px 10px 0px 10px;
+    padding: 15px 10px;
+    justify-content: center;
+    line-height: 1;
+    text-decoration: none;
+    color: #ffc536;
+    font-size: 28px;
+    border-radius: 10px;
+    font-weight: bold;
+    transition: 0.3s;
+    background-color: #ffffff;
+    border: 0;
+    box-shadow: 0px 0px 15px 3px rgba(141, 141, 141, 0.315);
+}
+#myDialog button:hover, #renameFolderDialog button:hover, #renameFileDialog button:hover, #folderDialog button:hover{
+    cursor: pointer;
+    color: #ffff;
+    background-color: #ffc536;
+}
+#renameFolderDialog, #renameFileDialog, #folderDialog{
+    background-color: #ffc536;
+    border: 1px solid black;
+    padding: 15px;
+    border-radius: 25px;
+    font-size: 25px;
+}
+#renameFolderDialog div, #renameFileDialog div, #folderDialog div{
+    display: flex;
+    flex-direction: column;
+}
+input{
+    outline: none;
+    border: 2px solid black;
+    padding: 2px 2px;
+    font-size: 20px;
+}
+#renameFolderDialog button,  #renameFileDialog button, #folderDialog button{
+    margin-top: 20px;
+    padding: 10px 5px;
+    justify-content: center;
+    line-height: 1;
+    text-decoration: none;
+    color: #ffc536;
+    font-size: 22px;
+    border-radius: 10px;
+    font-weight: bold;
+    transition: 0.3s;
+    background-color: #ffffff;
+    border: 0;
+    box-shadow: 0px 0px 15px 3px rgba(141, 141, 141, 0.315);
+}
+
+@media(max-width: 675px){
+    .createdAt, .format{
+        display: none;
+    }
+}
+@media(max-width: 440px){
+    .ICONS{
+        height: 200px;
+    }
 }

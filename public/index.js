@@ -7,6 +7,8 @@ const uploadForm = document.querySelector('#uploadForm');
 const folderForm = document.getElementById("folderForm")
 const folderDialog = document.querySelector('#folderDialog');
 
+const closeFolderDialog = document.querySelector("#closeFolderDialog")
+
 const folderDialogBTN  = document.querySelector('#openFolderDialog');
 const lastPathSegment = window.location.pathname.split('/').filter(Boolean).pop();
 
@@ -79,6 +81,9 @@ folderDialogBTN.addEventListener("click", function() {
     myDialog.close();
     folderDialog.showModal();
 });
+closeFolderDialog.addEventListener("click", ()=>{
+  myDialog.close();
+})
 function closeFolder(){
   folderDialog.close();
 }
@@ -121,6 +126,10 @@ async function deleteFile(){
     method: "POST"
   });
   window.location.reload();
+};
+
+async function informationFile(){
+  location.href='/informationFile/' + curFileId;
 };
 
 async function downloadFile() {

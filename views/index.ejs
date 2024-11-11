@@ -10,7 +10,9 @@
 <body>
     <!--Dialogs-->
     <dialog id="myDialog">
+        
         <div>
+            <button id="closeFolderDialog">Close</button>
             <button id="openFolderDialog">Add Folder</button>
             <button id="uploadButton">Add File</button>
         </div>
@@ -33,7 +35,7 @@
     <dialog id="renameFolderDialog">
         <div>
             <div>
-                <label for="name">New name</label>
+                <label for="name">New folder name</label>
                 <input id="FnewName" type="text" name="name" pattern="^[\w\-. ]+$">
             </div>   
             
@@ -47,7 +49,7 @@
     <dialog id="renameFileDialog">
         <div>
             <div>
-                <label for="name">New name</label>
+                <label for="name">New file name</label>
                 <input id="FileNewN" type="text" name="name" pattern="^[\w\-. ]+$">
             </div>   
             
@@ -70,7 +72,7 @@
         <button id="EditFileBTN">Rename</button>
         <button onclick="downloadFile();">Download</button>
         <button onclick="deleteFile();">Delete</button>
-        <button onclick="downloadFile();">Information</button>
+        <button onclick="informationFile();">Information</button>
     </div>
 
     
@@ -110,7 +112,7 @@
                             </div>
                         </button>
                         <div class="end">
-                            <h2><%=f.createdAt%></h2>
+                            <h2 class="createdAt"><%=f.createdAt%></h2>
                             <img class="FolderOptions" src="/dots.png" alt="options" onclick="openFolderOptions(event, '<%= f.id %>');">
                         </div>
                     </form>
@@ -126,8 +128,8 @@
                             </div>
                         </button>
                         <div class="end">
-                            <h2><%=f.format%></h2>
-                            <h2><%=f.createdAt%></h2>
+                            <h2 class="format"><%=f.format%></h2>
+                            <h2 class="createdAt"><%=f.createdAt%></h2>
                             <img src="/dots.png" alt="options" onclick="openFileOptions(event, '<%= f.id %>');">
                         </div>
                     </form>

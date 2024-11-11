@@ -14,8 +14,8 @@ const multer  = require('multer')
 const { createClient } = require('@supabase/supabase-js');
 
 const supabase = createClient(
-  'https://sdpfzgxytxeijierqnga.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNkcGZ6Z3h5dHhlaWppZXJxbmdhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzEyNTI1MjIsImV4cCI6MjA0NjgyODUyMn0.ZrCkj-ndRgSZMJVt48XUlH36PMLq4Ft_WoQ2YlVEdAo'
+  process.env.supabaseURL,
+  process.env.supabaseSecret
 );
 
 const PORT = 3000
@@ -416,6 +416,28 @@ app.post("/renameFile/:id", async(req, res) => {
     }
   });
   res.sendStatus(200);
+});
+
+app.get("/informationFile/:id", async(req, res) => {
+  if(!req.user){
+    return res.redirect("/");
+  }
+  const fileData = await prisma.file.findUnique({
+    where:{
+      id: parseInt(req.params.id)
+    }
+  });
+  console.log(fileData);
+  function formatBytes(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(1024));
+    const result = (bytes / Math.pow(1024, i)).toFixed(2);
+    
+    return `${result} ${sizes[i]}`;
+  }
+  res.render("information", {name: fileData.name, size: formatBytes(parseInt(fileData.bytes)), format: fileData.format, time: fileData.createdAt});
 });
 
 app.listen(PORT, () => console.log("http://localhost:" + PORT + "/"));
